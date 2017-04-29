@@ -54,7 +54,9 @@ in the command line, where `u_task_spec=example` sets the name of the task. It w
 
 If this command is executed on the cluster, it will submit 60 jobs to the cluster instead. In  `job/exp1_example`, there will be an additional script starts with `kill_` in case you submit these jobs by mistake and want kill all of them. 
 
-*IMPORTANT* By default, Shepherd will run the copied code in `job/exp1_example/src` instead of the source code in your workspace. This means, if do the following:
+#### IMPORTANT
+
+By default, Shepherd will run the copied code in `job/exp1_example/src` instead of the source code in your workspace. This means, if do the following:
 
 1. Run `fab --set=u_task_spec=example exp1`
 
@@ -103,6 +105,8 @@ and see what you have in `job/exp2_example`. In this example, if you are not hap
 
 ### Useful Tips
 
-* *Dry run* (`u_dry=1`): This will just generate the script without running (submitting) in the `script` folder.  
+#### Dry run 
+(`u_dry=1`): This will just generate the script without running (submitting) in the `script` folder.  
 
-* *Run the lastest version* (`u_latest=1`): By default, Shepherd will run just generate the script without running (submitting) in the `script` folder.  
+#### Run the lastest version
+ (`u_latest=1`): By default, Shepherd will run just generate the script without running (submitting) in the `script` folder.  
