@@ -86,7 +86,7 @@ and see what's in `job/exp2_example`. In this example, if you are not happy with
 
 **Dry run** (`u_dry=1`): This will just generate the script without running (submitting) in the `script` folder.  
 
-**Run the lastest version** (`u_latest=1`): Run the latest version of the source code. See [IMPORTANT](### IMPORTANT) for details.
+**Run the lastest version** (`u_latest=1`): Run the latest version of the source code. See [IMPORTANT](#IMPORTANT) for details.
  
 
 ### IMPORTANT
@@ -107,7 +107,7 @@ It won't work as you might want. This will still use the old code in `job/exp1_e
 
 3. Try `fab --set=u_task_spec=example_v2 exp1`, which will create a new `job/exp1_example_v2/src` and the code is up-to-date.
 
-4. Use `fab --set=u_task_spec=example,u_latest=1 exp1`, as suggested in the [Useful Tips](### Useful Tips) This will run the code in your workspace, although the code in `job/exp1_example/src` is still the old version.
+4. Use `fab --set=u_task_spec=example,u_latest=1 exp1`, as suggested in the [Useful Tips](#Useful Tips) This will run the code in your workspace, although the code in `job/exp1_example/src` is still the old version.
 
 
 
