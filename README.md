@@ -42,10 +42,13 @@ def exp1():
 
 ```
 
-This snippet is already in the `fabfile.py` of this repo, the basic idea is just generating the python command strings and submit to the `job_handler`. Then run:
+This snippet is already in the `fabfile.py` of this repo, the basic idea is just generating the python command strings (5 * 4  * 3 = 60 combinations) and submit to the `job_handler`. Then run:
 
  
 		fab --set=u_task_spec=example exp1
 
 
+in the command line, where `u_task_spec=example` sets the name of the task. It will run all the experiments and store everything into a new creates folder named `job/exp1_example`, which includes 8 folders. In this example, only 2 of them are used, `script` stores the all the scripts generated, `std` stores all the system outputs. 
+
+If this command is executed on the cluster, it will submit 60 jobs to the cluster instead. In  `job/exp1_example`, there will be an additional script starts with `kill_` in case you submit these jobs by mistake and want kill all of them. 
 
