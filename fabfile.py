@@ -3,7 +3,7 @@
 # --------------------------------------- 
 # File Name : fabfile.py
 # Creation Date : 02-05-2016
-# Last Modified : Thu Sep  1 23:06:54 2016
+# Last Modified : Sat Apr 29 10:21:48 2017
 # Created By : wdd 
 # --------------------------------------- 
 from __future__ import with_statement
@@ -38,11 +38,3 @@ def exp2():
         ('param4', 'relu tanh sigmoid'),
     ]
     grid_search(lambda map: basic_func(command_base % env, map), search_list)
-
-
-@shepherd(before=[load_conf])
-def sync():
-    env.u_workspace = os.getcwd()
-    with cd(env.u_workspace):
-        for rmt in env.u_remote.split(';'):
-            run('rsync -av *.py src %s' % rmt)
