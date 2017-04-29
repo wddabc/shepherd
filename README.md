@@ -30,13 +30,22 @@ This program takes 4 hyperparameters --param[1-4]. Now you want to try out some 
 def exp1():
     header_pattern = 'python %(u_python_dir)s/example.py --param1 123'
     id = 0
-    for param1 in [64, 128, 256, 512, 1024]:
-        param1_str = ' --param2 %s' % str(param1)
-        for param2 in [0.1, 0.01, 0.001, 0.0001]:
-            param2_str = ' --param3 %s' % str(param2)
-            for param3 in ['relu', 'tanh', 'sigmoid']:
-                param3_str = ' --param4 %s' % str(param3)
+    for param2 in [64, 128, 256, 512, 1024]:
+        param2_str = ' --param2 %s' % str(param2)
+        for param3 in [0.1, 0.01, 0.001, 0.0001]:
+            param3_str = ' --param3 %s' % str(param3)
+            for param4 in ['relu', 'tanh', 'sigmoid']:
+                param4_str = ' --param4 %s' % str(param4)
                 id += 1
-                command = header_pattern % env + param1_str + param2_str + param3_str
+                command = header_pattern % env + param2_str + param3_str + param4_str
                 env.u_job_handler.submit([command], str(id))
+
 ```
+
+This snippet is already in the `fabfile.py` of this repo, the basic idea is just generating the python command strings and submit to the `job_handler`. Then run:
+
+ 
+		fab --set=u_task_spec=example exp1
+
+
+
