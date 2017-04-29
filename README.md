@@ -17,9 +17,9 @@ The key features of Shepherd include:
 
 ### Usage
 
-Easy, first copy the `shepherd.py` into your working directory, then create and edit your own `fabfile.py` and enjoy. This repository just gives a working example.
+Easy, first copy the `shepherd.py` into your working directory, then create and edit your own `fabfile.py` and enjoy.
 
-After checking out this repo. There is an implementation of your brilliant idea, say, `src/python/example.py`. Running so you need: 
+This repository just gives a working example. After checking out this repo. There is an implementation of your brilliant idea, say, `src/python/example.py`. Running so you need: 
 
        	python src/python/example.py --param1 123 --param2 64 --param3 0.1 --param4 relu 
 
