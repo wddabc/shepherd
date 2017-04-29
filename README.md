@@ -21,7 +21,7 @@ Easy, first copy the `shepherd.py` into your working directory, then create and 
 
 ### Example 1 
 
-This repository just gives a working example. After checking out this repo. There is an implementation of your brilliant idea, say, `src/python/example.py`. Running so you need: 
+This repository just gives a working example. After checking out this repo, there is an implementation of your brilliant idea, say, `src/python/example.py`. Running so you need: 
 
        	python src/python/example.py --param1 123 --param2 64 --param3 0.1 --param4 relu 
 
