@@ -1,10 +1,3 @@
-#!/usr/bin/python
-# --------------------------------------- 
-# File Name :
-# Creation Date : 28-04-2017
-# Last Modified : Fri Apr 28 18:45:38 2017
-# Created By : wdd 
-# --------------------------------------- 
 import argparse
 
 _arg_parser = argparse.ArgumentParser()

@@ -1,13 +1,4 @@
-#!/usr/bin/python
-# coding=utf-8
-# --------------------------------------- 
-# File Name : fabfile.py
-# Creation Date : 02-05-2016
-# Last Modified : Sat Apr 29 10:21:48 2017
-# Created By : wdd 
-# --------------------------------------- 
 from __future__ import with_statement
-
 import os
 from fabric.api import env, run
 from fabric.context_managers import cd

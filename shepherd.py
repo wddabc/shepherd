@@ -1,12 +1,4 @@
-#!/usr/bin/python
-# --------------------------------------- 
-# File Name : fabfile.py
-# Creation Date : 22-11-2015
-# Last Modified : Mon May  2 13:12:07 2016
-# Created By : wdd 
-# --------------------------------------- 
 from __future__ import with_statement
-
 import math
 from fabric.api import task, hide, show, run, local, env, settings, hosts
 from functools import wraps
