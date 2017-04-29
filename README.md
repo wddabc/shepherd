@@ -50,9 +50,28 @@ This snippet is already in the `fabfile.py` of this repo, the basic idea is just
 		fab --set=u_task_spec=example exp1
 
 
-in the command line, where `u_task_spec=example` sets the name of the task. It will run all the experiments and store everything into a new creates folder named `job/exp1_example`, which includes 8 folders. In this example, only 2 of them are used, `script` stores the all the scripts generated, `std` stores all the system outputs. 
+in the command line, where `u_task_spec=example` sets the name of the task. It will run all the experiments and store everything into a new creates folder named `job/exp1_example`, which includes 8 folders. In this example, only 3 of them are used, `script` stores the all the scripts generated, `std` stores all the system outputs, `src` is a copy of the current code you are running. 
 
 If this command is executed on the cluster, it will submit 60 jobs to the cluster instead. In  `job/exp1_example`, there will be an additional script starts with `kill_` in case you submit these jobs by mistake and want kill all of them. 
+
+*IMPORTANT* By default, Shepherd will run the copied code in `job/exp1_example/src` instead of the source code in your workspace. This means, if do the following:
+
+1. Run `fab --set=u_task_spec=example exp1`
+
+2. Make changes of the source code in your workspace
+
+3. Run `fab --set=u_task_spec=example exp1` again 
+
+It won't work as you might want. This will still use the old code in `job/exp1_example/src`. To get away with this, you can. 
+
+1. Delete `job/exp1_example` before run the command again 
+
+2. Directly change the code in `job/exp1_example/src`
+
+3. Try `fab --set=u_task_spec=example_v2 exp1`, which will create a new `job/exp1_example_v2/src` and the code is up-to-date.
+
+4. Use `fab --set=u_task_spec=example,u_latest=1 exp1`. This will run the code in your workspace, although the code in `job/exp1_example/src` is still the old version.
+
 
 ### Example 2 
 
@@ -80,3 +99,10 @@ and see what you have in `job/exp2_example`. In this example, if you are not hap
 		fab --set=u_task_spec=example,u_param2="100 200 300" exp2
 
 . It will use `100 200 300` instead of the default `64 128 256 512 1024`.
+
+
+### Useful Tips
+
+* *Dry run* (`u_dry=1`): This will just generate the script without running (submitting) in the `script` folder.  
+
+* *Run the lastest version* (`u_latest=1`): By default, Shepherd will run just generate the script without running (submitting) in the `script` folder.  
