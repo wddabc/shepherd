@@ -87,6 +87,7 @@ and see what's in `job/exp2_example`. In this example, if you are not happy with
 **Dry run** (`u_dry=1`): This will just generate the script without running (submitting) in the `script` folder.  
 
 **Run the lastest version** (`u_latest=1`): Run the latest version of the source code. See [IMPORTANT](#IMPORTANT) for details.
+
 **Submit job batches** (`u_bs=tasks per job`): Numbers of tasks per job. The example commands so far generate 60 tasks with 60 jobs (scripts). If you are trying thousands of combinations with one combination (task) per job, you are probably killing the cluster's job scheduler or blocking other users, then your cluster administrators will probably put you into the Death Note, so don't do that. Try to add `u_bs`, for example. `fab --set=u_task_spec=example,u_bs=20 exp1` will submit 3 scripts with 20 jobs for each, where these 20 jobs will be executed serially. 
  
 
