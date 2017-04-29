@@ -117,5 +117,5 @@ It won't work as you might want. This will still use the old code in `job/exp1_e
 
 **others**: Will be overwritten if the same file name encountered.
 
-**Runing on the cluster**: A job will be skipped if there is a job with the same job name already running in the cluster.
+**Runing on the cluster**: A job will be skipped if there is a job with the same job name already running.
 
