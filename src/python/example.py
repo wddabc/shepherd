@@ -5,21 +5,15 @@
 # Last Modified : Fri Apr 28 18:45:38 2017
 # Created By : wdd 
 # --------------------------------------- 
-import sys, re, string, pickle, theano, argparse
-import theano.tensor as T
-import numpy as np
-from itertools import *
+import argparse
 
 _arg_parser = argparse.ArgumentParser()
-_arg_parser.add_argument('--task', default='main', type=str, action='store', help='')
-_arg_parser.add_argument('--x', default=0, type=int, action='store', help='')
+_arg_parser.add_argument('--fixed_param', default=0, type=int, action='store', help='')
+_arg_parser.add_argument('--param1', default=0, type=int, action='store', help='')
+_arg_parser.add_argument('--param2', default=0, type=float, action='store', help='')
+_arg_parser.add_argument('--param3', default='', type=str, action='store', help='')
 _args = _arg_parser.parse_args()
 
-def _config(args_dict=vars(_args)):
-    return '\n'.join("{0}:{1}".format(key, val) for (key, val) in args_dict.items())
-
-
-def main():
-    pass
-
-if __name__ == "__main__": locals()[_args.task]()
+if __name__ == "__main__":
+    print 'Running with: fixed_param=%i, param1=%i, param2=%.f, param3=%s' % (
+        _args.fixed_param, _args.param1, _args.param2, _args.param3)

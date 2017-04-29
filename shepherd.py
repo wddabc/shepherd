@@ -25,8 +25,10 @@ line_splitter = re.compile('\s+')
 
 
 # A function wrapper
-def wraper(before=[], after=[]):
+def shepherd(before=[], after=[]):
     def decorator(func):
+        @task
+        @hosts('localhost')
         @wraps(func)
         def decorated(*args, **kwargs):
             env.u_func_name = func.__name__
@@ -152,6 +154,7 @@ class CLSPJobHandler(JobHandler):
     def __init__(self, batch_size=1, dry_run=False):
         super(CLSPJobHandler, self).__init__(batch_size, dry_run)
         env.u_gpu = env.get('u_gpu', '0')
+        env.u_cpus = env.get('u_cpus', '1')
         dev_flag = '#$ -pe smp %(u_cpus)s\n' % env
         if int(env.u_gpu) > 0:
             dev_flag += '#$ -l gpu=%(u_gpu)s,h=b1[1-8]*\n' \
