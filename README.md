@@ -87,11 +87,14 @@ and see what's in `job/exp2_example`. In this example, if you are not happy with
 **Dry run** (`u_dry=1`): This will just generate the script without running (submitting) in the `script` folder.  
 
 **Run the lastest version** (`u_latest=1`): Run the latest version of the source code. See [IMPORTANT](#IMPORTANT) for details.
+**Submit job batches** (`u_bs=tasks per job`): Numbers of tasks per job. The example commands so far generate 60 tasks with 60 jobs (scripts). If you are trying thousands of combinations with one combination (task) per job, you are probably killing the cluster's job scheduler or blocking other users, then your cluster administrators will probably put you into the Death Note, so don't do that. Try to add `u_bs`, for example. `fab --set=u_task_spec=example,u_bs=20 exp1` will submit 3 scripts with 20 jobs for each, where these 20 jobs will be executed serially. 
  
 
 ### IMPORTANT
 
-By default, Shepherd will run the copied code in `job/exp1_example/src` instead of the source code in your workspace. This means, if do the following:
+When you running the same command twice, the following behaviors should be keep in mind.
+
+**`src` folder**: By default, Shepherd will run the copied code in `job/exp1_example/src` instead of the source code in your workspace. This means, if do the following:
 
 1. Run `fab --set=u_task_spec=example exp1`
 
@@ -109,5 +112,9 @@ It won't work as you might want. This will still use the old code in `job/exp1_e
 
 4. Use `fab --set=u_task_spec=example,u_latest=1 exp1`, as suggested in the [Useful Tips](#Useful-Tips) This will run the code in your workspace, although the code in `job/exp1_example/src` is still the old version.
 
+**`std` folder** : `.log` files will be appended rather than overwritten.
 
+**others**: Will be overwritten if the same file name encountered.
+
+**Runing on the cluster**: A job will be skipped if there is a job with the same job name already running in the cluster.
 
