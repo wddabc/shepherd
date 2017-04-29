@@ -54,7 +54,42 @@ in the command line, where `u_task_spec=example` sets the name of the task. It w
 
 If this command is executed on the cluster, it will submit 60 jobs to the cluster instead. In  `job/exp1_example`, there will be an additional script starts with `kill_` in case you submit these jobs by mistake and want kill all of them. 
 
-#### IMPORTANT
+### Example 2 
+
+The above example should be good enough so far. If you want a life even easier, try out `exp2()`, which does exactly the same thing as `exp1()`, with fewer lines of code:
+
+```python
+@shepherd(before=[init], after=[post])
+def exp2():
+    header_pattern = 'python %(u_python_dir)s/example.py --param1 123'
+    search_list = [
+        ('param2', '64 128 256 512 1024'),
+        ('param3', '0.1 0.01 0.001 0.0001'),
+        ('param4', 'relu tanh sigmoid'),
+    ]
+    grid_search(lambda map: basic_func(header_pattern % env, map), search_list)
+```
+
+Try
+
+
+		fab --set=u_task_spec=example exp2
+
+and see what's in `job/exp2_example`. In this example, if you are not happy with the hardcoded hyperparameter candidates, for instance, `param2` you can do:
+
+		fab --set=u_task_spec=example,u_param2="100 200 300" exp2
+
+. It will use `100 200 300` instead of the default `64 128 256 512 1024`.
+
+
+### Useful Tips
+
+**Dry run** (`u_dry=1`): This will just generate the script without running (submitting) in the `script` folder.  
+
+**Run the lastest version** (`u_latest=1`): Run the latest version of the source code. See [IMPORTANT](### IMPORTANT) for details.
+ 
+
+### IMPORTANT
 
 By default, Shepherd will run the copied code in `job/exp1_example/src` instead of the source code in your workspace. This means, if do the following:
 
@@ -72,41 +107,7 @@ It won't work as you might want. This will still use the old code in `job/exp1_e
 
 3. Try `fab --set=u_task_spec=example_v2 exp1`, which will create a new `job/exp1_example_v2/src` and the code is up-to-date.
 
-4. Use `fab --set=u_task_spec=example,u_latest=1 exp1`. This will run the code in your workspace, although the code in `job/exp1_example/src` is still the old version.
+4. Use `fab --set=u_task_spec=example,u_latest=1 exp1`, as suggested in the [Useful Tips](### Useful Tips) This will run the code in your workspace, although the code in `job/exp1_example/src` is still the old version.
 
 
-### Example 2 
 
-The above example should be good enough so far. If you want a life even easier, try out `exp2()`, which does exactly the same thing as `exp1()`, with fewer lines of code:
-
-```python
-@shepherd(before=[init], after=[post])
-def exp2():
-    header_pattern = 'python %(u_python_dir)s/example.py --param1 123'
-    search_list = [
-        ('param2', '64 128 256 512 1024'),
-        ('param3', '0.1 0.01 0.001 0.0001'),
-        ('param4', 'relu tanh sigmoid'),
-    ]
-    grid_search(lambda map: basic_func(header_pattern % env, map), search_list)
-```
-
-Try it with:
-
-
-		fab --set=u_task_spec=example exp2
-
-and see what you have in `job/exp2_example`. In this example, if you are not happy with the hardcoded hyperparameter candidates, for instance, `param2` you can do:
-
-		fab --set=u_task_spec=example,u_param2="100 200 300" exp2
-
-. It will use `100 200 300` instead of the default `64 128 256 512 1024`.
-
-
-### Useful Tips
-
-#### Dry run 
-(`u_dry=1`): This will just generate the script without running (submitting) in the `script` folder.  
-
-#### Run the lastest version
- (`u_latest=1`): By default, Shepherd will run just generate the script without running (submitting) in the `script` folder.  
