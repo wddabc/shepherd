@@ -16,7 +16,7 @@ from shepherd import shepherd, init, post, grid_search, basic_func, load_conf
 
 @shepherd(before=[init], after=[post])
 def exp1():
-    header_pattern = 'python %(u_python_dir)s/example.py --param1 123'
+    cmd_base = 'python %(u_python_dir)s/example.py --param1 123'
     id = 0
     for param2 in [64, 128, 256, 512, 1024]:
         param2_str = ' --param2 %s' % str(param2)
@@ -25,19 +25,19 @@ def exp1():
             for param4 in ['relu', 'tanh', 'sigmoid']:
                 param4_str = ' --param4 %s' % str(param4)
                 id += 1
-                command = header_pattern % env + param2_str + param3_str + param4_str
+                command = cmd_base % env + param2_str + param3_str + param4_str
                 env.u_job_handler.submit([command], str(id))
 
 
 @shepherd(before=[init], after=[post])
 def exp2():
-    header_pattern = 'python %(u_python_dir)s/example.py --param1 123'
+    command_base = 'python %(u_python_dir)s/example.py --param1 123'
     search_list = [
         ('param2', '64 128 256 512 1024'),
         ('param3', '0.1 0.01 0.001 0.0001'),
         ('param4', 'relu tanh sigmoid'),
     ]
-    grid_search(lambda map: basic_func(header_pattern % env, map), search_list)
+    grid_search(lambda map: basic_func(command_base % env, map), search_list)
 
 
 @shepherd(before=[load_conf])
