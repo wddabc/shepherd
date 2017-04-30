@@ -90,6 +90,8 @@ and see what's in `job/exp2_example`. In this example, if you are not happy with
 
 **Submit job batches** (`u_bs=tasks per job`): Numbers of tasks per job. The example commands so far generate 60 tasks with 60 jobs (scripts). If you are trying thousands of combinations with one combination (task) per job, you are probably killing the cluster's job scheduler or blocking other users, then your cluster administrators will probably put you into the Death Note, so don't do that. Try to add `u_bs`, for example. `fab --set=u_task_spec=example,u_bs=20 exp1` will submit 3 scripts with 20 jobs for each, where these 20 jobs will be executed serially. 
 
+**Random search** (`u_rs`): Randomly skip the jobs with probability `1-u_rs`.
+
 **Set queue to run the jobs** (`u_queue`): This is only for MARCC users
  
 ### IMPORTANT

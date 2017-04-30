@@ -9,4 +9,4 @@ _args = _arg_parser.parse_args()
 
 if __name__ == "__main__":
     print 'Running with: param1=%i, param2=%i, param3=%.f, param4=%s' % (
-        _args.fixed_param, _args.param1, _args.param2, _args.param3)
+        _args.param1, _args.param2, _args.param3, _args.param4)

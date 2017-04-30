@@ -4,7 +4,7 @@ from fabric.api import task, hide, show, run, local, env, settings, hosts
 from functools import wraps
 from fabric.context_managers import cd
 import numpy.random as rnd
-import os, re, sys
+import os, re
 import json
 
 try:
@@ -115,8 +115,11 @@ class JobHandler(object):
         pass
 
     def submit(self, command, config='TEST'):
+        if not rnd.random() < env.u_rs:
+            local('echo Random sample skip: ' + config, capture=True)
+            return
         if not self._valid(command, config):
-            local('echo skip: ' + config, capture=True)
+            local('echo Skip: ' + config, capture=True)
             return
         self.__task_counter += 1
         self.__job_queue += [(command, config)]
@@ -337,6 +340,7 @@ def init():
         load_conf()
         env.u_task_spec = env.get('u_task_spec', 'TEST')
         env.u_task_prfx = env.get('u_task_prfx', '')
+        env.u_rs = float(env.get('u_rs', 1))
         env.u_task_name = '%(u_task_prfx)s%(u_func_name)s_%(u_task_spec)s' % env
         env.u_time = env.get('u_time', local('date +%Y_%m_%d_%H_%M_%S', capture=True))
         env.u_device = env.get('u_device', 'cpu')
