@@ -1,5 +1,5 @@
 from shepherd import shepherd,SPD, init, post, grid_search, basic_func
-from shepherd import SYS
+from shepherd import SYS, USR
 
 
 @shepherd(before=[init], after=[post])
@@ -26,3 +26,7 @@ def exp2():
         ('param4', 'relu tanh sigmoid'),
     ]
     grid_search(lambda map: basic_func(command_base, map), search_list)
+
+@shepherd(before=[init], after=[post])
+def exp3():
+    print(USR.bar)
