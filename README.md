@@ -12,7 +12,7 @@ The key features of Shepherd include:
 
 ### Requirements 
 
-* [fabric](http://www.fabfile.org/)
+* Python3 
 
 
 ### Usage
@@ -30,7 +30,7 @@ This program takes 4 hyperparameters --param[1-4]. Now you want to try out some 
 ```python
 @shepherd(before=[init], after=[post])
 def exp1():
-    header_pattern = 'python %(u_python_dir)s/example.py --param1 123'
+    cmd_base = 'python %(python_dir)s/example.py --param1 123' % SYS
     id = 0
     for param2 in [64, 128, 256, 512, 1024]:
         param2_str = ' --param2 %s' % str(param2)
@@ -39,20 +39,20 @@ def exp1():
             for param4 in ['relu', 'tanh', 'sigmoid']:
                 param4_str = ' --param4 %s' % str(param4)
                 id += 1
-                command = header_pattern % env + param2_str + param3_str + param4_str
-                env.u_job_handler.submit([command], str(id))
+                command = cmd_base + param2_str + param3_str + param4_str
+                SPD().submit([command], str(id))
 
 ```
 
-This snippet is already in the `fabfile.py` of this repo, the basic idea is just generating the python command strings (5 * 4  * 3 = 60 combinations) and submit to the `job_handler`. Then run:
+This snippet is already in the `experiment.py` of this repo, the basic idea is just generating the python command strings (5 * 4  * 3 = 60 combinations) and submit to the `SPD()`. Then run:
 
  
-		fab --set=u_task_spec=example exp1
+		python shepherd.py exp1-foo
 
 
-in the command line, where `u_task_spec=example` sets the name of the task. It will run all the experiments and store everything into a new creates folder named `job/exp1_example`, which includes 8 folders. In this example, only 3 of them are used, `script` stores the all the scripts generated, `std` stores all the system outputs, `src` is a copy of the current code you are running. 
+in the command line, where `foo`, which is after the hyphen, sets the name of the task. It will run all the experiments and store everything into a new creates folder named `job/exp1-foo`, which includes 8 folders. In this example, only 3 of them are used, `script` stores the all the scripts generated, `std` stores all the system outputs, `src` is a copy of the current code you are running. 
 
-If this command is executed on the cluster, it will submit 60 jobs to the cluster instead. In  `job/exp1_example`, there will be an additional script starts with `kill_` in case you submit these jobs by mistake and want kill all of them. 
+If this command is executed on the cluster, it will submit 60 jobs to the cluster instead. In  `job/exp1-foo`, there will be an additional script starts with `info-` which includes the metadata of the submitted jobs (such as the job name, job ids, etc.).
 
 ### Example 2 
 
@@ -61,60 +61,76 @@ The above example should be good enough so far. If you want a life even easier, 
 ```python
 @shepherd(before=[init], after=[post])
 def exp2():
-    header_pattern = 'python %(u_python_dir)s/example.py --param1 123'
+    command_base = 'python %(python_dir)s/example.py --param1 123' % SYS
     search_list = [
         ('param2', '64 128 256 512 1024'),
         ('param3', '0.1 0.01 0.001 0.0001'),
         ('param4', 'relu tanh sigmoid'),
     ]
-    grid_search(lambda map: basic_func(header_pattern % env, map), search_list)
+    grid_search(lambda map: basic_func(command_base, map), search_list)
 ```
 
 Try
 
+		python shepherd.py exp2-foo
 
-		fab --set=u_task_spec=example exp2
+and see what's in `job/exp2-example`. In this example, if you are not happy with the hardcoded hyperparameter candidates, for instance, `param2` you can do:
 
-and see what's in `job/exp2_example`. In this example, if you are not happy with the hardcoded hyperparameter candidates, for instance, `param2` you can do:
+		python shepherd.py exp2-foo -u param2="100 200 300"
 
-		fab --set=u_task_spec=example,u_param2="100 200 300" exp2
+. It will use `100 200 300` instead of the default `64 128 256 512 1024`. `-u` leads the keyword arguments, which can be visited by attributes of `USR`.
+For example, if we have:
 
-. It will use `100 200 300` instead of the default `64 128 256 512 1024`.
+```python
+@shepherd(before=[init], after=[post])
+def exp3():
+    print(USR.bar)
+```
+
+and we run:
+
+		python shepherd.py exp3-foo -u bar="hellow world"
+
+it will print `hellow world`.
 
 
 ### Useful Tips
 
-**Dry run** (`u_dry=1`): This will just generate the script without running (submitting) in the `script` folder.  
+**Dry run** (`-d`): This will just generate the script without running (submitting) in the `script` folder.  
 
-**Run the lastest version** (`u_latest=1`): Run the latest version of the source code. See [IMPORTANT](#IMPORTANT) for details.
+**Run the lastest version** (`-l`): Run the latest version of the source code. See [IMPORTANT](#IMPORTANT) for details.
 
-**Submit job batches** (`u_bs=tasks per job`): Numbers of tasks per job. The example commands so far generate 60 tasks with 60 jobs (scripts). If you are trying thousands of combinations with one combination (task) per job, you are probably killing the cluster's job scheduler or blocking other users, so don't do that. Try to add `u_bs`, for example. `fab --set=u_task_spec=example,u_bs=20 exp1` will submit 3 scripts with 20 jobs for each, where these 20 jobs will be executed serially. 
+**Submit job batches** (`-b`): Numbers of tasks per job. The example commands so far generate 60 tasks with 60 jobs (scripts). If you are trying thousands of combinations with one combination (task) per job, you are probably killing the cluster's job scheduler or blocking other users, so don't do that. Try to add `-b`, for example. `python shepherd.py exp2-foo -b 20` will submit 3 scripts with 20 jobs for each, where these 20 jobs will be executed serially. 
 
-**Random search** (`u_rs`): Another way to reduce the number of jobs by randomly skipping the jobs with probability `1 - u_rs`.
+**Random search** (`-r`): Another way to reduce the number of jobs by randomly skipping the jobs with probability `1 - r`.
 
-**Set queue to run the jobs** (`u_queue`): This is only for MARCC users
+**System arguments** (`-s`): Set the system arguments when running on the server, which are set by keywords. For example:
  
+		python shepherd.py exp2-foo -u param2="100 200 300" -s queue=shared mem=20g duration=72:00:00
+
+submits the jobs to the `shared` queue, with memory limit 20g and time limit 72 hours. Note that these values can be visited by attributes of `SYS`.
+
 ### IMPORTANT
 
 When you running the same command twice, the following behaviors should be keep in mind.
 
-**`src` folder**: By default, Shepherd will run the copied code in `job/exp1_example/src` instead of the source code in your workspace. This means, if do the following:
+**`src` folder**: By default, Shepherd will run the copied code in `job/exp1-foo/src` instead of the source code in your workspace. This means, if do the following:
 
-1. Run `fab --set=u_task_spec=example exp1`
+1. Run `python shepherd.py exp1-foo`
 
 2. Make changes of the source code in your workspace
 
-3. Run `fab --set=u_task_spec=example exp1` again 
+3. Run `python shepherd.py exp1-foo` again 
 
-It won't work as you might want. This will still use the old code in `job/exp1_example/src`. To get away with this, you can. 
+It won't work as you might want. This will still use the old code in `job/exp1-foo/src`. To get away with this, you can. 
 
-1. Delete `job/exp1_example` before run the command again 
+1. Delete `job/exp1-foo` before run the command again, or 
 
-2. Directly change the code in `job/exp1_example/src`
+2. Directly change the code in `job/exp1-foo/src`, or
 
-3. Try `fab --set=u_task_spec=example_v2 exp1`, which will create a new `job/exp1_example_v2/src` and the code is up-to-date.
+3. Try `python shepherd.py exp1-bar`, which will create a new `job/exp1-bar/src` and the code is up-to-date.
 
-4. Use `fab --set=u_task_spec=example,u_latest=1 exp1`, as suggested in the [Useful Tips](#Useful-Tips) This will run the code in your workspace, although the code in `job/exp1_example/src` is still the old version.
+4. Use `python shepherd.py exp1-bar -l`, as suggested in the [Useful Tips](#Useful-Tips) This will run the code in your workspace, although the code in `job/exp1-bar/src` is still the old version.
 
 **`std` folder** : `.log` files will be appended rather than overwritten.
 
