@@ -241,7 +241,8 @@ def init():
     setup()
     task_l = _args.task.split('-')
     if len(task_l) == 1: task_l += ['TEST']
-    SYS.set('task_name', '%(task_prfx)s-' % SYS + '-'.join(task_l))
+    prfx = '%(task_prfx)s-' % SYS if SYS.task_prfx else ''
+    SYS.set('task_name', prfx + '-'.join(task_l))
     SYS.set('device', 'cpu')
     SYS.set('mem', '5g')
     SYS.time = CMD('date +%Y_%m_%d_%H_%M_%S')
@@ -290,8 +291,6 @@ def init_marcc():
 
 
 def init_cluster():
-    SYS.set('job_number', 100000)
-    SYS.set('wait', '24:00:00')
     if SYS.host == 'clsp':
         init_clsp_grid()
     elif SYS.host == 'marcc':
@@ -560,40 +559,6 @@ class MarccInteractJobHandler(MarccJobHandler):
     def _run(self, id):
         self._my_run('{runner} {script}'.format(runner=self.runner,
                                                 script=self.script))
-
-
-def _git():
-    CMD('git pull;git commit -am "SYNC:{}";git push'.format(SYS.set('msg', 'minor')))
-    CMD('git describe --always > src/version.txt')
-
-
-def _upload():
-    for rmt in SYS.remote.split(';'):
-        CMD('rsync -av *.py src tools %s' % rmt)
-
-
-def _download():
-    for rmt in SYS.remote.split(';'):
-        CMD('rsync -av %s/tape.sh .' % rmt)
-        CMD('rsync -av %s/log/*.log log/' % rmt)
-
-
-@shepherd(before=[setup])
-def git():
-    _git()
-
-
-@shepherd(before=[setup])
-def sync_only():
-    _download()
-    _upload()
-
-
-@shepherd(before=[setup])
-def sync():
-    _download()
-    _git()
-    _upload()
 
 
 if __name__ == "__main__":
