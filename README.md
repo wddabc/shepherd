@@ -50,9 +50,9 @@ This snippet is already in the `experiment.py` of this repo, the basic idea is j
 		python shepherd.py exp1-foo
 
 
-in the command line, where `foo`, which is after the hyphen, sets the name of the task. It will run all the experiments and store everything into a new creates folder named `job/exp1-foo`, which includes 8 folders. In this example, only 3 of them are used, `script` stores the all the scripts generated, `std` stores all the system outputs, `src` is a copy of the current code you are running. 
+in the command line, where `foo`, which is after the hyphen, sets the name of the task. It will run all the experiments and store everything into a new creates folder named `jobs/exp1-foo`, which includes 8 folders. In this example, only 3 of them are used, `script` stores the all the scripts generated, `std` stores all the system outputs, `src` is a copy of the current code you are running. 
 
-If this command is executed on the cluster, it will submit 60 jobs to the cluster instead. In  `job/exp1-foo`, there will be an additional script starts with `info-` which includes the metadata of the submitted jobs (such as the job name, job ids, etc.).
+If this command is executed on the cluster, it will submit 60 jobs to the cluster instead. In  `jobs/exp1-foo`, there will be an additional script starts with `info-` which includes the metadata of the submitted jobs (such as the job name, job ids, etc.).
 
 ### Example 2 
 
@@ -74,7 +74,7 @@ Try
 
 		python shepherd.py exp2-foo
 
-and see what's in `job/exp2-example`. In this example, if you are not happy with the hardcoded hyperparameter candidates, for instance, `param2` you can do:
+and see what's in `jobs/exp2-example`. In this example, if you are not happy with the hardcoded hyperparameter candidates, for instance, `param2` you can do:
 
 		python shepherd.py exp2-foo -u param2="100 200 300"
 
@@ -110,11 +110,19 @@ it will print `hellow world`.
 
 submits the jobs to the `shared` queue, with memory limit 20g and time limit 72 hours. Note that these values can be visited by attributes of `SYS`.
 
+Besides this way, it can also be set in the config file `.spdrc.json`, which is given as an example. Suggested argument:
+
+`host`: host of the machine. "local" is using the local machine. "clsp" is the clsp grid. "marcc" is the MARCC grid.
+
+`data`: the data folder. 
+
+`out`: the folder to store the `jobs` folder. 
+``
 ### IMPORTANT
 
 When you running the same command twice, the following behaviors should be keep in mind.
 
-**`src` folder**: By default, Shepherd will run the copied code in `job/exp1-foo/src` instead of the source code in your workspace. This means, if do the following:
+**`src` folder**: By default, Shepherd will run the copied code in `jobs/exp1-foo/src` instead of the source code in your workspace. This means, if do the following:
 
 1. Run `python shepherd.py exp1-foo`
 
@@ -122,15 +130,15 @@ When you running the same command twice, the following behaviors should be keep 
 
 3. Run `python shepherd.py exp1-foo` again 
 
-It won't work as you might want. This will still use the old code in `job/exp1-foo/src`. To get away with this, you can. 
+It won't work as you might want. This will still use the old code in `jobs/exp1-foo/src`. To get away with this, you can. 
 
-1. Delete `job/exp1-foo` before run the command again, or 
+1. Delete `jobs/exp1-foo` before run the command again, or 
 
-2. Directly change the code in `job/exp1-foo/src`, or
+2. Directly change the code in `jobs/exp1-foo/src`, or
 
-3. Try `python shepherd.py exp1-bar`, which will create a new `job/exp1-bar/src` and the code is up-to-date.
+3. Try `python shepherd.py exp1-bar`, which will create a new `jobs/exp1-bar/src` and the code is up-to-date.
 
-4. Use `python shepherd.py exp1-bar -l`, as suggested in the [Useful Tips](#Useful-Tips) This will run the code in your workspace, although the code in `job/exp1-bar/src` is still the old version.
+4. Use `python shepherd.py exp1-bar -l`, as suggested in the [Useful Tips](#Useful-Tips) This will run the code in your workspace, although the code in `jobs/exp1-bar/src` is still the old version.
 
 **`std` folder** : `.log` files will be appended rather than overwritten.
 
