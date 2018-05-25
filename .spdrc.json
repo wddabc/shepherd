@@ -1,0 +1,4 @@
+{
+  "host": "local",
+  "syslog": "wdd_local.log"
+}

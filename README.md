@@ -17,7 +17,7 @@ The key features of Shepherd include:
 
 ### Usage
 
-Easy, first copy the `shepherd.py` into your working directory, then create and edit your own `fabfile.py` and enjoy.
+Easy, first copy the `shepherd.py` into your working directory, then create and edit your own `experiment.py` and enjoy.
 
 ### Example 1 
 
@@ -25,7 +25,7 @@ This repository just gives a working example. After checking out this repo, ther
 
        	python src/python/example.py --param1 123 --param2 64 --param3 0.1 --param4 relu 
 
-This program takes 4 hyperparameters --param[1-4]. Now you want to try out some other hyperparameters by grid search. You can create a function in `fabfile.py` with the snippet like this:
+This program takes 4 hyperparameters --param[1-4]. Now you want to try out some other hyperparameters by grid search. You can create a function in `experiment.py` with the snippet like this:
 
 ```python
 @shepherd(before=[init], after=[post])
